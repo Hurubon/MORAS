@@ -1,0 +1,62 @@
+class Brick
+{
+        field int width;
+        field int height;
+        field int x;
+        field int y;
+
+        constructor Brick new(int _x, int _y)
+        {
+                let width = 30;
+                let height = 14;
+                let x = _x;
+                let y = _y;
+
+                return this;
+        }
+
+        method int getCenterX() { return x + (width / 2);  }
+        method int getCenterY() { return y + (height / 2); }
+
+        function bool update(Ball ball, Array bricks, int n, int m)
+        {
+                var int collissionIndex;
+                var Brick collidedBrick;
+
+                let collissionIndex = Collision.ballWithBricks(ball, bricks, n, m);
+
+                if (collissionIndex > -1)
+                {
+                        let collidedBrick = bricks[collissionIndex];
+                        let bricks[collissionIndex] = null;
+
+                        do collidedBrick.hide();
+                        do collidedBrick.dispose();
+
+                        return true;
+                }
+                return false;
+        }
+
+        method void draw()
+        {
+                do Screen.setColor(true);
+                do Screen.drawRectangle(x, y, x + width, y + height);
+                do Screen.setColor(false);
+                do Screen.drawRectangle(x + 1, y + 1, x + width - 1, y + height - 1);
+                return;
+        }
+
+        method void hide()
+        {
+                do Screen.setColor(false);
+                do Screen.drawRectangle(x, y, x + width, y + height);
+                return;
+        }
+
+        method void dispose()
+        {
+                do Memory.deAlloc(this);
+                return;
+        }
+}

@@ -1,0 +1,86 @@
+class Main
+{
+        static Array  bricks;
+        static Paddle paddle;
+        static Ball   ball;
+        static bool winFlag, loseFlag, updateScore;
+        static int score;
+
+        function void init()
+        {
+                var int i, j;
+                var Brick brick;
+
+                let bricks = Array.new(80);
+                let paddle = Paddle.new();
+                let ball   = Ball.new();
+
+                let winFlag     = false;
+                let loseFlag    = false;
+                let updateScore = false;
+
+                let score  = 0;
+
+                while (i < 5)
+                {
+                        while (j < 16)
+                        {
+                                let brick = Brick.new(j * 32, i * 17 + 12);
+                                let bricks[i * 16 + j] = brick;
+                                do brick.draw();
+
+                                let j = j + 1;
+                        }
+
+                        let i = i + 1;
+                        let j = 0;
+                }
+
+                do Output.printInt(score);
+                do paddle.draw();
+                do ball.draw();
+
+                return;
+        }
+
+        function int main()
+        {
+                var int i, j;
+
+                do Main.init();
+
+                while (~(winFlag | loseFlag))
+                {
+                        let i = 0;
+                        do paddle.update();
+                        do paddle.redraw();
+
+                        while (i < 4)
+                        {
+                                let updateScore = Brick.update(ball, bricks, 16, 5);
+                                let loseFlag    = ball.update(paddle);
+
+                                if (updateScore) {
+                                        let score = score + 1;
+                                        do Output.moveCursor(0, 0);
+                                        do Output.printInt(score);
+
+                                        if (score = 80) {
+                                                let winFlag = true;
+                                        }
+                                }
+
+
+                                do ball.redraw();
+                                do Sys.wait(16);
+                                let i = i + 1;
+                        }
+                }
+
+                do bricks.dispose();
+                do paddle.dispose();
+                do ball.dispose();
+
+                return 0;
+        }
+}

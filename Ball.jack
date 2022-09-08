@@ -1,0 +1,112 @@
+class Ball
+{
+        field int x;
+        field int y;
+        field int prevX;
+        field int prevY;
+
+        field int r;
+        field int sqrtR;
+
+        field int direction_x;
+        field int direction_y;
+
+        field int velocity;
+
+        constructor Ball new()
+        {
+                let x = 10 * 16 + 7;
+                let y = 5 * 16 + 7;
+                let prevX = 0;
+                let prevY = 0;
+
+                let r = 8;
+                let sqrtR = Math.sqrt(r);
+
+                let direction_x = 1;
+                let direction_y = 1;
+                let velocity = 2;
+
+                return this;
+        }
+
+        method int getX() { return x; }
+        method int getY() { return y; }
+        method int getR() { return r; }
+        method int getSqrtR() { return sqrtR; }
+
+
+        method void draw()
+        {
+                do Screen.setColor(true);
+                do Screen.drawCircle(x, y, r);
+                do Screen.setColor(false);
+                do Screen.drawCircle(x, y, r - 1);
+                return;
+        }
+
+        method void redraw()
+        {
+                do Screen.setColor(false);
+                do Screen.drawCircle(prevX, prevY, r);
+                do draw();
+                return;
+        }
+
+        method bool update(Paddle paddle)
+        {
+                var int _x, _y;
+                var bool inScreenX, inScreenY, collisionPaddle;
+
+                let prevX = x;
+                let prevY = y;
+
+                let _x = x + (direction_x * velocity);
+                let _y = y + (direction_y * velocity);
+
+                let inScreenX = (-1 < (_x - r)) & ((_x + r) < 512);
+                let inScreenY = (11 < (_y - r)) & ((_y + r) < 256);
+                let collisionPaddle = Collision.ballWithPaddle(this, paddle);
+
+                if (inScreenX & inScreenY & ~collisionPaddle) {
+                        let x = _x;
+                        let y = _y;
+                }
+                else {
+                        if (collisionPaddle) {
+                                let direction_y = -direction_y;
+                                let _y = y + (direction_y * velocity);
+                        }
+
+                        if (inScreenX & inScreenY) {
+                                let x = _x;
+                                let y = _y;
+                        }
+                        else {
+                                if (_y + r > 255) {
+                                        return true;
+                                }
+                                else { if (inScreenX) {
+                                        let direction_y = -direction_y;
+                                }
+                                else { if (inScreenY) {
+                                        let direction_x = -direction_x;
+                                }
+                                else {
+                                        let direction_x = -direction_x;
+                                        let direction_y = -direction_y;
+                                }}}
+
+                                let x = x + (direction_x * velocity);
+                                let y = y + (direction_y * velocity);
+                        }
+                }
+                return false;
+        }
+
+        method void dispose()
+        {
+                do Memory.deAlloc(this);
+                return;
+        }
+}

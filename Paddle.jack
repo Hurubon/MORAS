@@ -1,0 +1,82 @@
+class Paddle
+{
+        field int x1;
+        field int y1;
+        field int x2;
+        field int y2;
+        field int direction;
+
+        constructor Paddle new()
+        {
+                let x1 = 192;
+                let y1 = 240;
+                let x2 = 255;
+                let y2 = 255;
+                let direction = 0;
+
+                return this;
+        }
+
+        method int getX1() { return x1; }
+        method int getX2() { return x2; }
+        method int getY1() { return y1; }
+        method int getY2() { return y2; }
+
+        method void update()
+        {
+                var int _x1, _x2;
+                var char key;
+                let key = Keyboard.keyPressed();
+
+                if (key = 65) {
+                        let direction = -1;
+                }
+                else{if (key = 68) {
+                        let direction = 1;
+                }
+                else {
+                        let direction = 0;
+                }}
+
+                let _x1 = x1 + (direction * 16);
+                let _x2 = x2 + (direction * 16);
+
+                if ((-1 < _x1) & (_x2 < 512)) {
+                        let x1 = _x1;
+                        let x2 = _x2;
+                }
+                return;
+        }
+
+        method void redraw()
+        {
+                if (direction = -1) {
+                        do Screen.setColor(false);
+                        do Screen.drawRectangle(x2 + 1, y1, x2 + 16, y2);
+                        do Screen.setColor(true);
+                        do draw();
+                }
+                else {if (direction = 1) {
+                        do Screen.setColor(false);
+                        do Screen.drawRectangle(x1 - 16, y1, x1 - 1, y2);
+                        do Screen.setColor(true);
+                        do draw();
+                }}
+                return;
+        }
+
+        method void draw()
+        {
+                do Screen.drawLine(x1, y1, x2, y1);
+                do Screen.drawLine(x2, y1, x2, y2);
+                do Screen.drawLine(x1, y2, x2, y2);
+                do Screen.drawLine(x1, y1, x1, y2);
+                return;
+        }
+
+        method void dispose()
+        {
+                do Memory.deAlloc(this);
+                return;
+        }
+}
