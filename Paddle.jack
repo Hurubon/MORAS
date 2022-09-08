@@ -67,6 +67,7 @@ class Paddle
 
         method void draw()
         {
+                do Screen.setColor(true);
                 do Screen.drawLine(x1, y1, x2, y1);
                 do Screen.drawLine(x2, y1, x2, y2);
                 do Screen.drawLine(x1, y2, x2, y2);
