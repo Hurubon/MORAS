@@ -5,7 +5,7 @@ class Collision
                 var int ballX, ballY, d;
                 var int paddleX1, paddleX2;
 
-                let d = ball.getSqrtR();
+                let d = ball.getR();
                 let ballX = ball.getX();
                 let ballY = ball.getY();
                 let paddleX1 = paddle.getX1();

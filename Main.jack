@@ -16,7 +16,7 @@ class Main
 
                 let scoreText = "Score: ";
 
-                let menu = Menu.new(24, 12, 1, 2, 3);
+                let menu = Menu.new(25, 12, 2, 8, 3);
 
                 do menu.addItem("Easy");
                 do menu.addItem("Medium");

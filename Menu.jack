@@ -37,14 +37,14 @@ class Menu
                 var int i, address;
                 var int cursorX, cursorY;
 
-                let cursorX = x + 4;
-                let cursorY = y + 2;
+                let cursorX = x;
+                let cursorY = y;
 
                 while (i < count)
                 {
                         if (i = curr)
                         {
-                                let address = 16384 + (cursorY * 352) + (cursorX / 2) + 62;
+                                let address = Menu.cursorToAddress(cursorX + 2, cursorY);
                                 do Memory.poke(address, 4096);
                                 do Memory.poke(address + 32, 12288);
                                 do Memory.poke(address + 64, 28672);
@@ -55,7 +55,7 @@ class Menu
                                 do Memory.poke(address + 224, 4096);
                         }
 
-                        do Output.moveCursor(cursorY, cursorX);
+                        do Output.moveCursor(cursorY, cursorX + 4);
                         do Output.printString(items[i]);
 
                         let cursorY = cursorY + 2;
@@ -69,9 +69,9 @@ class Menu
         {
                 var int i, j;
 
-                let i = (y + 1) * 352 + (x / 2) + 32;
+                let i = Menu.cursorToOffset(x, y);
 
-                while (i < ((2 * count + y + 1) * 352 + (x / 2) + 414))
+                while (i < Menu.cursorToOffset(x, y + height))
                 {
                         let j = 0;
 
@@ -161,5 +161,16 @@ class Menu
                 do items.dispose();
                 do Memory.deAlloc(this);
                 return;
+        }
+
+        // https://github.com/havivha/Nand2Tetris/blob/master/12/Output.jack#L203
+        function int cursorToOffset(int x, int y)
+        {
+                return (y * 32 * 11) + (x / 2);
+        }
+
+        function int cursorToAddress(int x, int y)
+        {
+                return 16384 + Menu.cursorToOffset(x, y);
         }
 }
