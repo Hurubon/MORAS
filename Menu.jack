@@ -1,0 +1,165 @@
+class Menu
+{
+        field int x;
+        field int y;
+        field int width;
+        field int height;
+
+        field int last;
+        field int curr;
+        field int count;
+        field Array items;
+
+        constructor Menu new(int _x, int _y, int _w, int _h, int _n)
+        {
+                let x = _x;
+                let y = _y;
+                let last   = 0;
+                let curr   = 0;
+                let count  = _n;
+                let width  = _w;
+                let height = _h;
+
+                let items = Array.new(count);
+
+                return this;
+        }
+
+        method void redraw()
+        {
+                do clear();
+                do draw();
+                return;
+        }
+
+        method void draw()
+        {
+                var int i, address;
+                var int cursorX, cursorY;
+
+                let cursorX = x + 4;
+                let cursorY = y + 2;
+
+                while (i < count)
+                {
+                        if (i = curr)
+                        {
+                                let address = 16384 + (cursorY * 352) + (cursorX / 2) + 62;
+                                do Memory.poke(address, 4096);
+                                do Memory.poke(address + 32, 12288);
+                                do Memory.poke(address + 64, 28672);
+                                do Memory.poke(address + 96, -1);
+                                do Memory.poke(address + 128, -1);
+                                do Memory.poke(address + 160, 28672);
+                                do Memory.poke(address + 192, 12288);
+                                do Memory.poke(address + 224, 4096);
+                        }
+
+                        do Output.moveCursor(cursorY, cursorX);
+                        do Output.printString(items[i]);
+
+                        let cursorY = cursorY + 2;
+                        let i       = i + 1;
+                }
+
+                return;
+        }
+
+        method void clear()
+        {
+                var int i, j;
+
+                let i = (y + 1) * 352 + (x / 2) + 32;
+
+                while (i < ((2 * count + y + 1) * 352 + (x / 2) + 414))
+                {
+                        let j = 0;
+
+                        while (j < width)
+                        {
+                                do Memory.poke(16384 + i + j, 0);
+                                let j = j + 1;
+                        }
+
+                        let i = i + 32;
+                }
+
+                return;
+        }
+
+        method int update()
+        {
+                var char key;
+
+                while (true)
+                {
+                        let key = Keyboard.keyPressed();
+
+                        if (key = 87) {
+                                do selectPrev();
+                        }
+                        else { if (key = 83) {
+                                do selectNext();
+                        }
+                        else { if (key = 128) {
+                                do clear();
+                                return curr + 1;
+                        }}}
+
+                        do Sys.wait(64);
+                }
+
+                return curr + 1;
+        }
+
+        method void selectPrev()
+        {
+                if (curr = 0) {
+                        let curr = count - 1;
+                }
+                else {
+                        let curr = curr - 1;
+                }
+
+                do redraw();
+                return;
+        }
+
+        method void selectNext()
+        {
+                if (curr = (count - 1)) {
+                        let curr = 0;
+                }
+                else {
+                        let curr = curr + 1;
+                }
+
+                do redraw();
+                return;
+        }
+
+        method void addItem(String item)
+        {
+                let items[last] = item;
+                let last = last + 1;
+
+                return;
+        }
+
+        method void dispose()
+        {
+                var int i;
+                var String item;
+
+                while (i < count)
+                {
+                        let item = items[i];
+                        let i    = i + 1;
+                        do item.dispose();
+                }
+
+                do items.dispose();
+                do Memory.deAlloc(this);
+                return;
+        }
+}

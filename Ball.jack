@@ -15,8 +15,8 @@ class Ball
 
         constructor Ball new()
         {
-                let x = 10 * 16 + 7;
-                let y = 5 * 16 + 7;
+                let x = 12 * 16;
+                let y = 6 * 16 + 12;
                 let prevX = 0;
                 let prevY = 0;
 
@@ -25,7 +25,7 @@ class Ball
 
                 let direction_x = 1;
                 let direction_y = 1;
-                let velocity = 2;
+                let velocity = 1;
 
                 return this;
         }

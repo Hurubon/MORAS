@@ -3,23 +3,40 @@ class Main
         static Array  bricks;
         static Paddle paddle;
         static Ball   ball;
+        static Menu   menu;
+
+        static String scoreText;
         static bool winFlag, loseFlag, updateScore;
         static int score;
 
-        function void init()
+        function int init()
         {
-                var int i, j;
+                var int i, j, difficulty;
                 var Brick brick;
 
+                let scoreText = "Score: ";
+
+                let menu = Menu.new(24, 12, 1, 2, 3);
+
+                do menu.addItem("Easy");
+                do menu.addItem("Medium");
+                do menu.addItem("Hard");
+
+                do menu.draw();
+                let difficulty = menu.update();
+
+                do Screen.clearScreen();
+                do menu.dispose();
+
                 let bricks = Array.new(80);
-                let paddle = Paddle.new();
+                let paddle = Paddle.new(difficulty);
                 let ball   = Ball.new();
 
                 let winFlag     = false;
                 let loseFlag    = false;
                 let updateScore = false;
 
-                let score  = 0;
+                let score = 0;
 
                 while (i < 5)
                 {
@@ -36,18 +53,33 @@ class Main
                         let j = 0;
                 }
 
+                do Output.moveCursor(0, 0);
+                do Output.printString(scoreText);
                 do Output.printInt(score);
+
+                do Output.moveCursor(0, 10);
+                if (difficulty = 1) {
+                        do Output.printString("| Difficulty: Easy");
+                }
+                else { if (difficulty = 2) {
+                        do Output.printString("| Difficulty: Medium");
+                }
+                else {
+                        do Output.printString("| Difficulty: Hard");
+                }}
+
                 do paddle.draw();
                 do ball.draw();
 
-                return;
+                return difficulty;
         }
 
         function int main()
         {
                 var int i, j;
+                var int difficulty;
 
-                do Main.init();
+                let difficulty = Main.init();
 
                 while (~(winFlag | loseFlag))
                 {
@@ -55,14 +87,14 @@ class Main
                         do paddle.update();
                         do paddle.redraw();
 
-                        while (i < 4)
+                        while (i < (2 * difficulty))
                         {
                                 let updateScore = Brick.update(ball, bricks, 16, 5);
                                 let loseFlag    = ball.update(paddle);
 
                                 if (updateScore) {
                                         let score = score + 1;
-                                        do Output.moveCursor(0, 0);
+                                        do Output.moveCursor(0, 7);
                                         do Output.printInt(score);
 
                                         if (score = 80) {
@@ -72,7 +104,7 @@ class Main
 
 
                                 do ball.redraw();
-                                do Sys.wait(16);
+                                do Sys.wait(8 / difficulty);
                                 let i = i + 1;
                         }
                 }
@@ -80,6 +112,7 @@ class Main
                 do bricks.dispose();
                 do paddle.dispose();
                 do ball.dispose();
+                do scoreText.dispose();
 
                 return 0;
         }

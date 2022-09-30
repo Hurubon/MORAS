@@ -6,12 +6,12 @@ class Paddle
         field int y2;
         field int direction;
 
-        constructor Paddle new()
+        constructor Paddle new(int difficulty)
         {
                 let x1 = 192;
                 let y1 = 240;
-                let x2 = 255;
-                let y2 = 255;
+                let x2 = x1 + 95 - (16 * difficulty);
+                let y2 = y1 + 15;
                 let direction = 0;
 
                 return this;
